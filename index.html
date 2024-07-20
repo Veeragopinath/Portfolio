@@ -178,6 +178,42 @@
         .proj{
             margin-top: 1.2rem;
         }
+        .center-head {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        .current-role{
+            color: #ffb53a;
+            margin-top: 6px;
+            margin-left: 1.3rem
+        }
+        .footer-content {
+            display: flex;
+            margin-top: 1rem;
+        }
+        #contact {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .timeline-item {
+            margin-bottom: 30px;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .timeline-item h3 {
+            margin-top: 0;
+        }
+
+        .list-group-item {
+            border: none;
+            background: #ffffff;
+        }
 /*todo   for mobile*/
         @media (max-width: 768px) {
 
@@ -260,35 +296,21 @@
                 margin-top: 1rem;
                 flex-direction: column;
             }
+            .center-head {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .current-role{
+                color: #ffb53a;
+                margin-top: 6px;
+                margin-left: 0;
+            }
         }
 
         /*todo mobile view end */
 
-        .footer-content {
-            display: flex;
-            margin-top: 1rem;
-        }
-        #contact {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .timeline-item {
-            margin-bottom: 30px;
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .timeline-item h3 {
-            margin-top: 0;
-        }
-
-        .list-group-item {
-            border: none;
-            background: #ffffff;
-        }
     </style>
 </head>
 <body>
@@ -303,7 +325,7 @@
         </button>
 
         <span class="center-head"><a class="navbar-brand" href="#">Veeragopinath M </a>
-        <h2 style="color: #ffb53a; margin-top: 6px">SDE @ LOBB</h2>
+        <h2 class="current-role">SDE @ LOBB</h2>
         </span>
 
         <div class="collapse navbar-collapse" id="navbarNav">
