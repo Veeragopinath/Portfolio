@@ -48,8 +48,17 @@
             padding: 10px 0;
             margin: 1.5rem 12.2rem;
         }
-
-
+        .edu-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+        .edu-item{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center}
 
         .navbar-brand {
             color: #fff !important;
@@ -166,7 +175,10 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
+        .proj{
+            margin-top: 1.2rem;
+        }
+/*todo   for mobile*/
         @media (max-width: 768px) {
 
             header {
@@ -199,7 +211,7 @@
             }
 
             .timeline-item ul {
-                font-size: 14px;
+                font-size: 1rem;
             }
 
             nav ul {
@@ -216,8 +228,52 @@
                 padding: 30px 15px;
                  margin-bottom: 0
             }
+          .edu-row{
+            display: flex;
+            flex-direction: column;
+           }
+
+            .edu-2{
+                margin-top: 1.3rem;
+            }
+            #contact{
+                display: flex;
+                flex-direction: column;
+            }
+            .list-group {
+                display: flex;
+                flex-direction: column;
+            }
+            .row {
+                --bs-gutter-x: 1.5rem;
+                --bs-gutter-y: 0;
+                display: flex;
+                flex-wrap: wrap;
+                margin-top: calc(-1* var(--bs-gutter-y));
+                margin-right: calc(-.5* var(--bs-gutter-x));
+                margin-left: calc(-.5* var(--bs-gutter-x));
+                padding: 1rem;
+            }
+
+            .footer-content{
+                display: flex;
+                margin-top: 1rem;
+                flex-direction: column;
+            }
         }
 
+        /*todo mobile view end */
+
+        .footer-content {
+            display: flex;
+            margin-top: 1rem;
+        }
+        #contact {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
         .timeline-item {
             margin-bottom: 30px;
             background: #ffffff;
@@ -274,15 +330,19 @@
 
     <section id="education" class="container ">
         <h2 class="text-center mb-4">🎓 Education</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <h3>Bachelor of Engineering; CGPA: 8.06 (June 2018 - May 2022)</h3>
-                <p>College of Engineering Guindy, Anna University, Chennai, India</p>
+        <div class="edu-row">
+            <div class="edu-item">
+                <h3>Bachelor of Engineering; CGPA: 8.06 </h3>
+                <span>(June 2018 - May 2022)</span>
+                <span>College of Engineering Guindy,</span>
+                <span> Anna University, Chennai, India</span>
 
             </div>
-            <div class="col-md-6">
-                <h3>HSC - 93% & SSLC : 98 % (June 2016 - May 2018)</h3>
-                <p>Vasan Matric Hr Secondary school Ramanathapuram, India</p>
+            <div class="edu-item edu-2" >
+                <h3> H.S.C - 93%  &  S.S.L.C : 98 % </h3>
+                    <span>(June 2016 - May 2018)</span>
+                <span>Vasan Matric Hr Secondary school </span>
+                <span>Ramanathapuram, India</span>
 
             </div>
         </div>
@@ -304,7 +364,7 @@
         <h2 class="text-center mb-4">💼 Work Experience</h2>
         <div class="timeline">
             <div class="timeline-item">
-                <h3>Phantom Smart Solutions, Chennai (Feb 2023 - Present)</h3>
+                <h3>Phantom Smart Solutions, Chennai (Feb 2023 - June 2024)</h3>
                 <p>Software Developer</p>
                 <ul>
                     <li>Co-led a team of two in the ground-up development of fully functional web applications using Vue.js Composition API, tailored to meet precise client specifications.</li>
@@ -329,7 +389,7 @@
     <section id="projects" class="container ">
         <h2 class="text-center mb-4">🛠️ Projects</h2>
         <div class="row">
-            <div class="col-md-6">
+            <div class="proj">
                 <h3>FINA-HQ - Financial Reporting Tool</h3>
                 <ul>
                     <li>Created over 100 user-interactive pages with forms to facilitate efficient data entry and management.</li>
@@ -339,7 +399,7 @@
                     <li>Technologies Used: Vue.js (Composition API), Nuxt.js, Pinia, Quasar Framework, TypeScript, Chart.js.</li>
                 </ul>
             </div>
-            <div class="col-md-6">
+            <div class="proj">
                 <h3>INCONN - Asset Management Software</h3>
                 <ul>
                     <li>Expanded INCONN into an extensive platform with over 70 interactive pages, enabling comprehensive asset management.</li>
@@ -350,7 +410,7 @@
                     <li>Technologies Used: Vue.js (Options API), Nuxt.js, Vuex, Vuetify, Chart.js.</li>
                 </ul>
             </div>
-            <div class="col-md-6">
+            <div class="proj">
                 <h3>WATTAWOW - Cycling Analytics & Safety App</h3>
                 <ul>
                     <li>Integrated Fabric.js to enable users to annotate and crop images, allowing for the creation of personalized safety stickers.</li>
@@ -359,7 +419,7 @@
                     <li>Technologies Used: Vue.js (Options API), Vuex, Element UI, Fabric.js.</li>
                 </ul>
             </div>
-            <div class="col-md-6">
+            <div class="proj">
                 <h3>DOCUBOT - Document Data Extraction Admin Panel</h3>
                 <ul>
                     <li>Created an administrative interface that supports the efficient management of text extraction processes, significantly boosting data processing efficiency.</li>
@@ -373,9 +433,11 @@
 
     <section id="contact" class="container ">
         <h2 class="text-center mb-4">📞 Contact</h2>
-        <p class="text-center">✉️ Email: <a href="mailto:veeragopinathm30@gmail.com">veeragopinathm30@gmail.com</a></p>
-        <p class="text-center">📱 Phone: +91-6382689587</p>
-        <p class="text-center">📍 Location: Chennai, India</p>
+      <div class="footer-content">
+          <p class="text-center">✉️ Email: <a href="mailto:veeragopinathm30@gmail.com">veeragopinathm30@gmail.com</a></p>
+          <p class="text-center">📱 Phone: +91-6382689587</p>
+          <p class="text-center">📍 Location: Chennai, India</p>
+      </div>
     </section>
 </main>
 
