@@ -109,7 +109,7 @@
         }
         /*for loader*/
 
-        /* Loader Styles */
+        /* Loader styles */
         .loader-wrapper {
             position: fixed;
             top: 0;
@@ -118,18 +118,33 @@
             height: 100%;
             background: #ffffff;
             display: flex;
-            align-items: center;
             justify-content: center;
-            z-index: 9999; /* Ensure it's on top of everything */
+            align-items: center;
+            z-index: 9999;
         }
 
         .loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #1c1c1c; /* Dark grey */
+            width: 48px;
+            height: 48px;
+            border: 5px solid #1c1c1c;
+            border-bottom-color: transparent;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .navbar-dark .navbar-toggler {
+            border: none;
         }
 
         @keyframes spin {
@@ -180,12 +195,12 @@
 </head>
 <body>
 <div class="loader-wrapper">
-    <div class="loader"></div>
+    <span class="loader"></span>
 </div>
 <header class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <span><a class="navbar-brand" href="#">Veeragopinath M 🌟</a>
-        <h2 style="color: #ffb53a">SDE @ LOBB</h2></span>
+        <span><a class="navbar-brand" href="#">Veeragopinath M </a>
+        <h2 style="color: #ffb53a; margin-top: 6px">SDE @ LOBB</h2></span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -323,12 +338,15 @@
 </footer>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Hide the loader after the content has loaded
+  window.addEventListener('load', () => {
     const loader = document.querySelector('.loader-wrapper');
-    loader.style.display = 'none';
+    loader.classList.add('fade-out');
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 1000);
+  });
 
-    // Your existing GSAP animations
+  document.addEventListener('DOMContentLoaded', () => {
     gsap.from('header', { duration: 1, y: '-100%', ease: 'bounce' });
     gsap.from('.profile-pic', { duration: 1.5, opacity: 0, scale: 0.5, ease: 'elastic' });
     gsap.from('h1', { duration: 1, opacity: 0, y: -50, delay: 1 });
