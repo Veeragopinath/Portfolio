@@ -53,12 +53,16 @@
             justify-content: space-between;
             margin-left: 6rem;
             margin-right: 3.2rem;
+            
         }
 
         header {
             background: #1c1c1c;
             padding: 10px 0;
             margin: 1.5rem 2rem;
+            position: fixed !important;
+            z-index: 9999;
+            width: -webkit-fill-available;
         }
         .edu-row {
             display: flex;
@@ -340,6 +344,22 @@
 
         /*todo mobile view end */
 
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .contact-info {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .contact-info p {
+                margin-right: 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -507,14 +527,10 @@
 
     <section id="contact" class="container">
         <h2 class="text-center mb-4">📞 Contact</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <p><i class="fas fa-envelope"></i> Email: <a href="mailto:veeragopinath.m@outlook.in">veeragopinath.m@outlook.in</a></p>
-                <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://www.linkedin.com/in/veeragopinath-m/" target="_blank">veeragopinath-m</a></p>
-            </div>
-            <div class="col-md-6">
-                <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/Veeragopinath" target="_blank">Veeragopinath</a></p>
-            </div>
+        <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:veeragopinath.m@outlook.in">veeragopinath.m@outlook.in</a></p>
+            <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://www.linkedin.com/in/veeragopinath-m/" target="_blank">veeragopinath-m</a></p>
+            <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/Veeragopinath" target="_blank">Veeragopinath</a></p>
         </div>
     </section>
 </main>
