@@ -38,16 +38,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js" defer></script>
 
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333;
+            --header-bg: #1c1c1c;
+            --header-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1c1c1c;
+            --text-color: #ffffff;
+            --header-bg: #333;
+            --header-text: #ffb53a;
+        }
+
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         header {
-            background: #1c1c1c;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             padding: 10px 0;
             position: fixed;
             top: 0;
@@ -62,13 +78,13 @@
         }
 
         .navbar-brand {
-            color: #fff !important;
+            color: var(--header-text) !important;
             font-size: 26px;
             font-weight: bold;
         }
 
         .nav-link {
-            color: #fff !important;
+            color: var(--header-text) !important;
         }
 
         .nav-link.active {
@@ -80,7 +96,7 @@
             width: 175px;
             height: 175px;
             border-radius: 50%;
-            border: 5px solid #1c1c1c;
+            border: 5px solid var(--header-bg);
             margin: 20px auto;
             display: block;
             object-fit: cover;
@@ -94,7 +110,7 @@
         }
 
         h1, h2, h3 {
-            color: #333;
+            color: var(--text-color);
             text-align: center;
         }
 
@@ -107,8 +123,8 @@
         }
 
         footer {
-            background: #1c1c1c;
-            color: #fff;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             text-align: center;
             padding: 20px 0;
         }
@@ -126,9 +142,10 @@
         .two-column > div {
             flex: 1 1 calc(50% - 10px);
             margin: 5px;
-            background: #f9f9f9;
+            background: var(--bg-color);
             padding: 15px;
             border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -147,6 +164,10 @@
             .two-column > div {
                 flex: 1 1 100%;
             }
+
+            #contact p {
+                text-align: center;
+            }
         }
 
         .contact-link {
@@ -162,6 +183,20 @@
         .skill-item {
             margin-bottom: 1rem;
             font-size: 1.1rem;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--header-bg);
+            color: var(--header-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 1000;
         }
     </style>
 </head>
@@ -188,6 +223,7 @@
 </header>
 <main>
     <section id="summary" class="container">
+        <img src="assets/photo.jpg" alt="Veeragopinath M" class="profile-pic">
         <h1>Hi, I'm Veeragopinath M 👋</h1>
         <p>🚀 I am a Software Developer specializing in React.js and Vue.js ecosystems. With three years of hands-on experience, I focus on creating intuitive user interfaces and driving technical innovation in collaborative team environments. Passionate about delivering value-added solutions efficiently and with a commitment to excellence.</p>
     </section>
@@ -290,6 +326,7 @@
 <footer>
     <p>&copy; 2023 Veeragopinath M. All rights reserved.</p>
 </footer>
+<button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
 <script>
   window.addEventListener('load', () => {
     const loader = document.querySelector('.loader-wrapper');
@@ -303,6 +340,19 @@
     gsap.from("h1", { duration: 1, opacity: 0, x: -100 });
     gsap.from("h2, ul", { duration: 1, opacity: 0, y: 50, stagger: 0.3 });
   });
+
+  function toggleDarkMode() {
+    const body = document.body;
+    if (body.dataset.theme === "dark") {
+        body.dataset.theme = "light";
+        localStorage.setItem("theme", "light");
+    } else {
+        body.dataset.theme = "dark";
+        localStorage.setItem("theme", "dark");
+    }
+  }
+
+  document.body.dataset.theme = localStorage.getItem("theme") || "light";
 </script>
 </body>
 </html>
