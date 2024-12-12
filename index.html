@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veeragopinath M - Software Developer Portfolio | Vue.js, Nuxt.js, TypeScript Expert</title>
-    <meta name="description" content="Explore the portfolio of Veeragopinath M, a seasoned Software Developer with expertise in Vue.js, Nuxt.js, and TypeScript. View projects, experience, and contact information.">
-    <meta name="keywords" content="Veeragopinath M, Software Developer, Vue.js, Nuxt.js, TypeScript, Web Development, Frontend Developer, Chennai, Software Development Engineer, Lobb Logistics, Phantom Smart Solutions, Wynwy Technologies">
+    <title>Veeragopinath M - Software Developer Portfolio | React.js, Vue.js Expert</title>
+    <meta name="description" content="Explore the portfolio of Veeragopinath M, a seasoned Software Developer with expertise in React.js, Vue.js, and TypeScript. View projects, experience, and contact information.">
+    <meta name="keywords" content="Veeragopinath M, Software Developer, React.js, Vue.js, TypeScript, Web Development, Frontend Developer, Chennai, Software Development Engineer, Lobb Logistics, Phantom Smart Solutions, Wynwy Technologies">
     <meta name="author" content="Veeragopinath M">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.veeragopinathm.com/">
     <meta property="og:title" content="Veeragopinath M - Software Developer Portfolio">
-    <meta property="og:description" content="Discover the work and skills of Veeragopinath M, a Vue.js and Nuxt.js expert. View projects, experience, and get in touch for collaborations.">
+    <meta property="og:description" content="Discover the work and skills of Veeragopinath M, a React.js and Vue.js expert. View projects, experience, and get in touch for collaborations.">
     <meta property="og:image" content="https://www.veeragopinathm.com/assets/portfolio-preview.jpg">
 
     <!-- Twitter -->
@@ -32,7 +32,7 @@
     <link href="https://db.onlinewebfonts.com/c/7cc6719bd5f0310be3150ba33418e72e?family=Comic+Sans+MS" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
-    
+
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js" defer></script>
@@ -40,42 +40,26 @@
     <style>
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: #ffffff;
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
             color: #333;
             margin: 0;
             padding: 0;
         }
 
-        .navbar>.container, .navbar>.container-fluid, .navbar>.container-lg, .navbar>.container-md, .navbar>.container-sm, .navbar>.container-xl, .navbar>.container-xxl {
-            display: flex;
-            flex-wrap: inherit;
-            align-items: center;
-            justify-content: space-between;
-            margin-left: 6rem;
-            margin-right: 3.2rem;
-        }
-
         header {
             background: #1c1c1c;
             padding: 10px 0;
-            margin: 0; /* Remove margin */
-            position: fixed !important; /* Make header sticky */
-            top: 0; /* Stick to the top */
+            position: fixed;
+            top: 0;
             z-index: 9999;
             width: 100%;
-        
+            animation: slideIn 1s ease;
         }
-        .edu-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-evenly;
+
+        @keyframes slideIn {
+            from { top: -100px; }
+            to { top: 0; }
         }
-        .edu-item{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center}
 
         .navbar-brand {
             color: #fff !important;
@@ -88,12 +72,8 @@
         }
 
         .nav-link.active {
-            color: #ffb53a !important; /* Highlight active link */
+            color: #ffb53a !important;
             font-weight: bold;
-        }
-
-        .nav-link i {
-            margin-right: 8px;
         }
 
         .profile-pic {
@@ -105,6 +85,12 @@
             display: block;
             object-fit: cover;
             object-position: center;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         h1, h2, h3 {
@@ -113,31 +99,12 @@
         }
 
         h1 {
-            font-size: 23px;
+            display: inline-block;
+            padding: 0.5rem;
+            background: #ffeb3b;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
-        h2 {
-            font-size: 20px;
-            margin-top: 0;
-        }
-
-        h3 {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-
-        p {
-            line-height: 1.6;
-            padding: 0 15px;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        /* ul li {
-            margin-bottom: 15px;
-        } */
 
         footer {
             background: #1c1c1c;
@@ -147,235 +114,55 @@
         }
 
         .container {
-            background: #ffffff;
             padding: 30px 15px;
-            margin-bottom: 30px;
         }
 
-        /*for loader*/
-
-        /* Loader styles */
-        .loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
+        .two-column {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
 
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #1c1c1c;
-            border-bottom-color: transparent;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .navbar-dark .navbar-toggler {
-            border: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .proj{
-            margin-top: 1.2rem;
-        }
-        .center-head {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-        }
-        .current-role{
-            color: #ffb53a;
-            margin-top: 6px;
-            margin-left: 1.3rem
-        }
-        .footer-content {
-            display: flex;
-            margin-top: 1rem;
-        }
-        #contact {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .timeline-item {
-            margin-bottom: 30px;
-            background: #ffffff;
+        .two-column > div {
+            flex: 1 1 calc(50% - 10px);
+            margin: 5px;
+            background: #f9f9f9;
+            padding: 15px;
             border-radius: 8px;
-            padding: 20px;
         }
 
-        .timeline-item h3 {
-            margin-top: 0;
-        }
-
-        .list-group-item {
-            border: none;
-            background: #ffffff;
-        }
-/*todo   for mobile*/
         @media (max-width: 768px) {
-            html, body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                height: 100%;
-            }
-
             header {
-                background: #1c1c1c;
                 padding: 10px 0;
-                margin: 0; /* Remove margin */
-                width: 100%;
             }
 
-            .navbar>.container, .navbar>.container-fluid, .navbar>.container-lg, .navbar>.container-md, .navbar>.container-sm, .navbar>.container-xl, .navbar>.container-xxl {
-                display: flex;
-                justify-content: space-between; /* Aligns items to the left and right */
-                align-items: center;
-                margin: 0; /* Remove margin */
-                padding: 0; /* Remove padding */
-                width: 100%;
-            }
-            left-head{
-
-            }
-            .center-head{
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .navbar-expand-lg .navbar-nav {
-                flex-direction: column;
-                text-align: center;
+            h1 {
+                font-size: 1.5rem;
             }
 
-            .timeline-item h3 {
-                font-size: 20px;
-            }
-
-            .timeline-item ul {
-                font-size: 1rem;
-            }
-
-            nav ul {
-                flex-direction: column;
-                padding: 0;
-            }
-
-            nav ul li {
-                margin: 10px 0;
-            }
-
-            .container {
-                background: #ffffff;
-                padding: 15px;
-                margin: 0; /* Remove margin */
-                width: 100%;
-            }
-          .edu-row{
-            display: flex;
-            flex-direction: column;
-           }
-
-            .edu-2{
-                margin-top: 1.3rem;
-            }
-            #contact{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .list-group {
-                display: flex;
+            .two-column {
                 flex-direction: column;
             }
-            .row {
-                --bs-gutter-x: 1.5rem;
-                --bs-gutter-y: 0;
-                display: flex;
-                flex-wrap: wrap;
-                margin-top: calc(-1* var(--bs-gutter-y));
-                margin-right: calc(-.5* var(--bs-gutter-x));
-                margin-left: calc(-.5* var(--bs-gutter-x));
-                padding: 1rem;
-            }
 
-            .footer-content{
-                display: flex;
-                margin-top: 1rem;
-                flex-direction: column;
-                align-items: center;
-            }
-            .center-head {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            }
-            .current-role{
-                color: #ffb53a;
-                margin-top: 6px;
-                margin-left: 0;
-            }
-            .loader-wrapper {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
+            .two-column > div {
+                flex: 1 1 100%;
             }
         }
 
-        /*todo mobile view end */
-
-        .contact-info {
-            display: flex;
-            flex-direction: column;
+        .contact-link {
+            text-decoration: none;
+            color: #ff5722;
+            transition: color 0.3s;
         }
 
-        @media (min-width: 768px) {
-            .contact-info {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            .contact-info p {
-                margin-right: 20px;
-            }
+        .contact-link:hover {
+            color: #e64a19;
         }
 
-        main {
-            padding-top: 60px; /* Adjust this value based on the header height */
+        .skill-item {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
-
-        @media (max-width: 768px) {
-            main {
-                padding-top: 70px; /* Adjust this value based on the header height for mobile */
-            }
-        }
-
     </style>
 </head>
 <body>
@@ -384,226 +171,138 @@
 </div>
 <header class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <button class="navbar-toggler left-head" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#">Veeragopinath M</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <span class="center-head"><a class="navbar-brand" href="#">Veeragopinath M </a>
-        <h2 class="current-role">SDE @ LOBB</h2>
-        </span>
-
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#summary">🚀 Summary</a></li>
-                <li class="nav-item"><a class="nav-link" href="#education">🎓 Education</a></li>
+                <li class="nav-item"><a class="nav-link" href="#summary">💼 Summary</a></li>
                 <li class="nav-item"><a class="nav-link" href="#skills">💻 Skills</a></li>
-                <li class="nav-item"><a class="nav-link" href="#experience">💼 Experience</a></li>
-                <li class="nav-item"><a class="nav-link" href="#projects">🛠️ Projects</a></li>
+                <li class="nav-item"><a class="nav-link" href="#experience">📂 Experience</a></li>
+                <li class="nav-item"><a class="nav-link" href="#projects">🔨 Projects</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">📞 Contact</a></li>
             </ul>
         </div>
     </div>
 </header>
-
 <main>
-    <section id="summary" class="container  pt-5">
-        <div class="text-center">
-            <img src="./assets/photo.jpg" alt="Veeragopinath M - Software Developer" class="profile-pic img-thumbnail">
-            <h1 class="my-3" >Hi Guys 🚀</h1>
-            <p >💼 I'm a seasoned Software Developer with over three years of hands-on experience in application design and development. 🌟 Recognized for driving innovation and delivering value-added solutions with minimal resources. 🤝 Eager to contribute to collaborative team efforts with a robust skill set and a track record of success in fast-paced environments.</p>
-        </div>
-    </section>
-
-    <section id="education" class="container ">
-        <h2 class="text-center mb-4">🎓 Education</h2>
-        <div class="edu-row">
-            <div class="edu-item">
-                <h3>Bachelor of Engineering; CGPA: 8.06 </h3>
-                <span>(June 2018 - May 2022)</span>
-                <span>College of Engineering Guindy,</span>
-                <span> Anna University, Chennai, India</span>
-
-            </div>
-            <div class="edu-item edu-2" >
-                <h3> H.S.C - 93%  &  S.S.L.C : 98 % </h3>
-                    <span>(June 2016 - May 2018)</span>
-                <span>Vasan Matric Hr Secondary school </span>
-                <span>Ramanathapuram, India</span>
-
-            </div>
-        </div>
+    <section id="summary" class="container">
+        <h1>Hi, I'm Veeragopinath M 👋</h1>
+        <p>🚀 I am a Software Developer specializing in React.js and Vue.js ecosystems. With three years of hands-on experience, I focus on creating intuitive user interfaces and driving technical innovation in collaborative team environments. Passionate about delivering value-added solutions efficiently and with a commitment to excellence.</p>
     </section>
 
     <section id="skills" class="container">
-        <h2 class="text-center mb-4">💻 Technical Skills</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <ul class="list-group">
-                    <li class="list-group-item">🌐 Frontend Development: JavaScript, HTML, CSS, TypeScript</li>
-                    <li class="list-group-item">🛠️ Frontend Frameworks: Vue.js, Nuxt.js, Sass</li>
-                    <li class="list-group-item">🔄 Vue Eco System: Vuex, Pinia (State Management), Vue Router (Routing)</li>
-                    <li class="list-group-item">🧪 Unit Testing & E2E: Vue-test-utils, Vitest, Jest, Cypress, Nuxt-test-utils</li>
-                    <li class="list-group-item">🧰 Component Libraries: Vuetify, Element UI, Quasar</li>
+        <h2>💻 Technical Skills</h2>
+        <div class="two-column">
+            <div>
+                <ul>
+                    <li class="skill-item">🖥️ Programming Languages: JavaScript, TypeScript, HTML, CSS</li>
+                    <li class="skill-item">🌐 Client-Side Libraries: React.js, Vue.js, Nuxt.js, Sass</li>
+                    <li class="skill-item">🔧 Backend Technologies: Node.js, Express.js, SQL (Postgres, Sequelize)</li>
                 </ul>
             </div>
-            <div class="col-md-6">
-                <ul class="list-group">
-                    <li class="list-group-item">🖥️ Backend Technologies: Node.js, Express.js, SQL (Postgres, Sequelize ORM)</li>
-                    <li class="list-group-item">🔧 Automation & Deployment: Shell Script, CI-CD pipeline</li>
-                    <li class="list-group-item">🛠️ Front-end Tools & Software: Sentry, BrowserStack, Google Analytics</li>
-                    <li class="list-group-item">🔧 Build Tools: Vite, Webpack, Vue CLI</li>
-                    <li class="list-group-item">🔧 Others: Git, GitHub, Postman, Jira, Confluence, Asana, Bitbucket</li>
+            <div>
+                <ul>
+                    <li class="skill-item">🧪 Testing: Vitest, Cypress, Jest, Playwright</li>
+                    <li class="skill-item">🛠️ State Management: Redux, Vuex, Pinia</li>
+                    <li class="skill-item">🎨 UI Frameworks: Material UI, Tailwind CSS, Vuetify, Quasar</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="experience" class="container ">
-        <h2 class="text-center mb-4">💼 Work Experience</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <h3>Lobb Logistics, Bengaluru (May 2024 - Present)</h3>
-                <p>Software Development Engineer</p>
+    <section id="experience" class="container">
+        <h2>📂 Work Experience</h2>
+        <div class="two-column">
+            <div>
+                <h3>🌟 Lobb Logistics (May 2024 - Present)</h3>
                 <ul>
-                    <li>Designed and implemented custom Vue components from scratch, ensuring high reusability and adherence to best practices in component design, collaborating closely with a team of 4 members.</li>
-                    <li>Provided innovative solutions to overcome frontend challenges, significantly improving the development process and overall application performance in the way of traditional test driven development.</li>
+                    <li>Developed modular, reusable components using Vue.js.</li>
+                    <li>Improved application performance through test-driven development and innovative solutions to frontend challenges.</li>
+                    <li>Led a team of three developers to implement custom UI components.</li>
                 </ul>
             </div>
-            <div class="timeline-item">
-                <h3>Phantom Smart Solutions, Chennai (Feb 2023 - May 2024)</h3>
-                <p>Software Developer</p>
+            <div>
+                <h3>✨ Phantom Smart Solutions (Feb 2023 - May 2024)</h3>
                 <ul>
-                    <li>Co-led a team of two in the ground-up development of fully functional web applications using Vue.js Composition API, tailored to meet precise client specifications.</li>
-                    <li>Enhanced application performance and scalability by contributing to server-side development with Node.js and Sequelize.</li>
-                    <li>Fostered strong client relationships through effective requirement gathering and the provision of innovative technical solutions, achieving over 90% client satisfaction rate.</li>
-                    <li>Ensured the timely delivery of project milestones through active collaboration with cross-functional teams.</li>
-                    <li>Upheld high standards of code quality and consistency through code reviews and mentoring team members.</li>
+                    <li>Co-led full-stack web application development, enhancing scalability and performance.</li>
+                    <li>Delivered high-quality, client-driven solutions with a 90% satisfaction rate.</li>
+                    <li>Mentored junior developers and conducted code reviews to maintain high-quality codebase.</li>
                 </ul>
             </div>
-            <div class="timeline-item">
-                <h3>Wynwy Technologies, UDS, Chennai (Dec 2021 - Jan 2023)</h3>
-                <p>Junior Frontend Developer</p>
+            <div>
+                <h3>🔧 Wynwy Technologies (Dec 2021 - Jan 2023)</h3>
                 <ul>
-                    <li>Played a pivotal role in a dynamic team of three, focusing on user interface development and seamless API integration.</li>
-                    <li>Made substantial contributions to the project's codebase by implementing Vue.js Options API, directly addressing project-specific needs and client requirements.</li>
-                    <li>Engaged in close collaboration with senior developers to troubleshoot and resolve critical issues, ensuring the delivery of high-quality features aligned with client feedback.</li>
+                    <li>Designed user interfaces and integrated APIs, solving complex issues efficiently.</li>
+                    <li>Utilized React.js to build feature-rich web applications with functional components and hooks.</li>
+                    <li>Collaborated with cross-functional teams to ensure seamless deployment of solutions.</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="projects" class="container ">
-        <h2 class="text-center mb-4">🛠️ Projects</h2>
-        <div class="row">
-            <div class="proj">
-                <h3>LOBB CONSOLE - Fullstack Freight Brokerage Platform</h3>
+    <section id="projects" class="container">
+        <h2>🔨 Projects</h2>
+        <div class="two-column">
+            <div>
+                <h3>🚛 LOBB Console</h3>
+                <p>A comprehensive freight brokerage platform optimizing logistics operations. Implemented state management with Pinia and developed custom components to ensure scalability and performance.</p>
                 <ul>
-                    <li>Developed the User Interface: Designed and implemented a responsive and intuitive user interface using Vue 3.4 and TypeScript, ensuring a seamless user experience across various devices.</li>
-                    <li>Custom Components: Built and maintained custom components from scratch, adhering to best practices in component design and reusability.</li>
-                    <li>State Management: Utilized Pinia for efficient state management, leveraging Vue's reactivity system to manage application state effectively.</li>
+                    <li>Developed responsive UI elements using Vue 3 and TypeScript.</li>
+                    <li>Streamlined workflows for brokers, carriers, and shippers.</li>
                 </ul>
             </div>
-            <div class="proj">
-                <h3>FINA-HQ - Financial Reporting Tool</h3>
+            <div>
+                <h3>📊 FINA-HQ</h3>
+                <p>A financial reporting tool with dynamic calculations and Zoho integration, streamlining document management and reporting cycles.</p>
                 <ul>
-                    <li>Created over 100 user-interactive pages with forms to facilitate efficient data entry and management.</li>
-                    <li>Implemented front-end calculations and dynamic sheet generation, enhancing the accuracy and speed of financial reporting.</li>
-                    <li>Enabled in-app editing capabilities with Zoho office integration, allowing for seamless modification and collaboration on financial documents.</li>
-                    <li>Developed functionalities for for generating sheets and PDFs, streamlining the creation of financial statements and reports.</li>
+                    <li>Implemented dynamic sheet generation for financial reports.</li>
+                    <li>Enabled seamless collaboration with Zoho Office integration.</li>
                 </ul>
             </div>
-            <div class="proj">
-                <h3>INCONN - Asset Management Software</h3>
+            <div>
+                <h3>🔧 INCONN</h3>
+                <p>Asset management software with 70+ interactive pages, designed for workforce optimization and compliance tracking.</p>
                 <ul>
-                    <li>Expanded INCONN into an extensive platform with over 70 plus interactive pages, enabling comprehensive asset management.</li>
-                    <li>Developed user-interactive forms to streamline the registration and tracking of assets, ensuring efficient management of inventories and work orders.</li>
-                    <li>Standardized various asset-related processes such as maintenance, housekeeping, audits, inspections, and compliance. These processes were visualized through a multi-dimensional table for clarity.</li>
-                    <li>Implemented features to regulate and optimize task-level workforce allocation, ensuring the optimal utilization of human resources.</li>
-                    <li>Integrated tools to monitor critical metrics like asset utilization, energy consumption, and maintenance costs, providing actionable insights that drive cost-saving and efficiency improvements.</li>
+                    <li>Developed forms for asset tracking and registration.</li>
+                    <li>Monitored key metrics like utilization and costs for actionable insights.</li>
                 </ul>
             </div>
-            <div class="proj">
-                <h3>WATTAWOW - Cycling Analytics & Safety App</h3>
+            <div>
+                <h3>🚴 WattaWow</h3>
+                <p>Cycling safety app enabling QR-based safety stickers and custom annotation tools for enhanced user experience.</p>
                 <ul>
-                    <li>Integrated Fabric.js to enable users to annotate and crop images, allowing for the creation of personalized safety stickers.</li>
-                    <li>Developed features for generating QR code-enabled safety stickers, which can be used in emergency situations.</li>
-                    <li>Built an admin panel for managing users and creating safety cards, streamlining the process for administrators.</li>
-                </ul>
-            </div>
-            <div class="proj">
-                <h3>DOCUBOT - Document Data Extraction Admin Panel</h3>
-                <ul>
-                    <li>Created an administrative interface that supports the efficient management of text extraction processes, significantly boosting data processing efficiency.</li>
-                    <li>Integrated Nuxt.js for server-side rendering and Vuex for state management, ensuring a smooth and cohesive workflow.</li>
-                    <li>Employed Vuetify for a consistent and responsive UI, and Chart.js for dynamic data visualization, enhancing the overall user experience.</li>
+                    <li>Integrated Fabric.js for image annotations and custom stickers.</li>
+                    <li>Developed admin panels for managing user-generated safety cards.</li>
                 </ul>
             </div>
         </div>
     </section>
 
     <section id="contact" class="container">
-        <h2 class="text-center mb-4">📞 Contact</h2>
-        <div class="contact-info">
-            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:veeragopinath.m@outlook.in">veeragopinath.m@outlook.in</a></p>
-            <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://www.linkedin.com/in/veeragopinath-m/" target="_blank">veeragopinath-m</a></p>
-            <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/Veeragopinath" target="_blank">Veeragopinath</a></p>
-        </div>
+        <h2>📞 Contact</h2>
+        <p>Email: <a class="contact-link" href="mailto:veeragopinath.m@gmail.com">veeragopinath.m@gmail.com</a></p>
+        <p>LinkedIn: <a class="contact-link" href="https://www.linkedin.com/in/veeragopinath-m/">Veeragopinath M</a></p>
+        <p>GitHub: <a class="contact-link" href="https://github.com/Veeragopinath">github.com/Veeragopinath</a></p>
     </section>
 </main>
-
 <footer>
-    <div class="footer-content" style="text-align: center;">
-        <p>&copy; 2023 Veeragopinath M. All rights reserved.</p>
-    </div>
+    <p>&copy; 2023 Veeragopinath M. All rights reserved.</p>
 </footer>
-
 <script>
   window.addEventListener('load', () => {
     const loader = document.querySelector('.loader-wrapper');
-    loader.classList.add('fade-out');
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, 1000);
+    loader.style.opacity = 0;
+    setTimeout(() => loader.style.display = 'none', 500);
   });
 
   document.addEventListener('DOMContentLoaded', () => {
-    gsap.from('header', { duration: 1, y: '-100%', ease: 'bounce' });
-    gsap.from('.profile-pic', { duration: 1.5, opacity: 0, scale: 0.5, ease: 'elastic' });
-    gsap.from('h1', { duration: 1, opacity: 0, y: -50, delay: 1 });
-    gsap.from('h2, h3', { duration: 1, opacity: 0, x: -50, delay: 1.5, stagger: 0.3 });
-    gsap.from('p, ul', { duration: 1, opacity: 0, x: 50, delay: 2, stagger: 0.3 });
-
-    // Highlight active nav link using Intersection Observer
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section');
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.6
-    };
-
-    const observerCallback = (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').includes(id)) {
-              link.classList.add('active');
-            }
-          });
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach(section => {
-      observer.observe(section);
-    });
+    gsap.from("header", { duration: 1, y: -50, ease: "bounce" });
+    gsap.from(".profile-pic", { duration: 1.5, opacity: 0, scale: 0.8, ease: "elastic" });
+    gsap.from("h1", { duration: 1, opacity: 0, x: -100 });
+    gsap.from("h2, ul", { duration: 1, opacity: 0, y: 50, stagger: 0.3 });
   });
 </script>
-
 </body>
 </html>
