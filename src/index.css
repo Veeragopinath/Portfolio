@@ -1,0 +1,443 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg-terminal: #050508;
+  --bg-sidebar: #0a0a0f;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --border-color-active: rgba(6, 182, 212, 0.35);
+  
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  
+  --color-green: #10b981;
+  --color-cyan: #06b6d4;
+  --color-pink: #ec4899;
+  --color-amber: #f59e0b;
+  --color-indigo: #6366f1;
+  
+  --font-mono: 'Share Tech Mono', monospace;
+  --transition-fast: 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono) !important;
+  cursor: crosshair;
+}
+
+body {
+  background-color: var(--bg-terminal);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* CRT Scanline Screen Overlay */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+  z-index: 99999;
+  background-size: 100% 3px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Scrollbar for terminal & explorer */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan);
+}
+
+/* Layout Panels */
+.terminal-container {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-terminal);
+  position: relative;
+  z-index: 1;
+}
+
+/* Left Sidebar: File Explorer */
+.file-explorer {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  user-select: none;
+}
+
+.explorer-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.explorer-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.explorer-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.explorer-node:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-cyan);
+}
+
+.explorer-node.active-file {
+  background-color: rgba(6, 182, 212, 0.05);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  color: var(--color-cyan);
+}
+
+/* Right Panel: Terminal Shell */
+.terminal-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header bar */
+.terminal-header {
+  height: 44px;
+  background-color: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  user-select: none;
+}
+
+.terminal-tab {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-tab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-green);
+  box-shadow: 0 0 6px var(--color-green);
+}
+
+.terminal-meta-info {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Console logs area */
+.terminal-viewport {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: radial-gradient(ellipse at center, rgba(10, 10, 20, 0.15) 0%, var(--bg-terminal) 100%);
+}
+
+.terminal-prompt-row {
+  display: flex;
+  align-items: center;
+}
+
+.terminal-prompt {
+  color: var(--color-green);
+  font-weight: bold;
+}
+
+.terminal-command {
+  color: #fff;
+  margin-left: 10px;
+}
+
+.terminal-output {
+  padding-left: 16px;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Interactive prompt input */
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px 24px 30px;
+  background-color: var(--bg-terminal);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.terminal-input-field {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  margin-left: 10px;
+  caret-color: var(--color-cyan);
+}
+
+/* Floating Status bar */
+.terminal-status-bar {
+  height: 28px;
+  background-color: var(--bg-sidebar);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.terminal-status-left {
+  display: flex;
+  gap: 16px;
+}
+
+.terminal-status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.status-link:hover {
+  color: var(--color-cyan);
+}
+
+/* Syntax highlight styles */
+.highlight-key { color: var(--color-pink); }
+.highlight-val { color: var(--color-green); }
+.highlight-num { color: var(--color-amber); }
+.highlight-bracket { color: var(--text-secondary); }
+
+/* File readouts styling */
+.markdown-header {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-cyan);
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+/* Project Cards in terminal */
+.terminal-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.terminal-project-card {
+  border: 1px solid var(--border-color);
+  background-color: rgba(255,255,255,0.01);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-project-img-box {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  background-color: #000;
+}
+
+.terminal-project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.terminal-project-card:hover .terminal-project-img {
+  opacity: 1;
+}
+
+.terminal-project-tech {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(5,5,8,0.9);
+  border: 1px solid var(--border-color);
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  color: var(--color-cyan);
+}
+
+.terminal-project-body {
+  padding: 14px;
+}
+
+.terminal-project-title {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.terminal-project-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* Form in terminal */
+.terminal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 450px;
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.terminal-form-title {
+  font-size: 0.85rem;
+  color: var(--color-pink);
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.terminal-form-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+}
+
+.terminal-form-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.terminal-form-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 4px 0;
+  outline: none;
+}
+
+.terminal-form-input:focus {
+  border-bottom-color: var(--color-cyan);
+}
+
+.terminal-form-btn {
+  align-self: flex-start;
+  margin-top: 10px;
+  background: var(--text-primary);
+  color: var(--bg-terminal);
+  border: none;
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.terminal-form-btn:hover {
+  background: var(--color-cyan);
+  color: #fff;
+}
+
+/* Loader styling */
+.fast-loader {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-terminal);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Mute toggle button */
+.terminal-mute-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.terminal-mute-btn:hover {
+  color: var(--color-cyan);
+}
+
+/* Responsive Explorer Collapse */
+@media (max-width: 768px) {
+  .terminal-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .file-explorer {
+    display: none; /* Mobile hides file sidebar */
+  }
+  
+  .terminal-project-grid {
+    grid-template-columns: 1fr;
+  }
+}
