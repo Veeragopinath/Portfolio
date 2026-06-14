@@ -8,6 +8,7 @@ function App() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const {
     isMuted,
+    isMusicPlaying,
     playClick,
     playHover,
     playKeypress,
@@ -15,7 +16,8 @@ function App() {
     playSuccess,
     playBootStep,
     playAccessGranted,
-    toggleMute
+    toggleMute,
+    toggleMusic
   } = useMechanicalKeyboard();
 
   useEffect(() => {
@@ -77,6 +79,8 @@ function App() {
           playSuccess={playSuccess}
           isMuted={isMuted}
           toggleMute={toggleMute}
+          isMusicPlaying={isMusicPlaying}
+          toggleMusic={toggleMusic}
         />
       )}
     </>

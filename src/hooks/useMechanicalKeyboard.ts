@@ -1,8 +1,15 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 export function useMechanicalKeyboard() {
   const [isMuted, setIsMuted] = useState(true); // Muted by default to follow browser policies
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const ambientNodesRef = useRef<{
+    oscs: OscillatorNode[];
+    gains: GainNode[];
+    intervalId: number | null;
+  } | null>(null);
 
   const initAudio = useCallback(() => {
     if (!audioCtxRef.current) {
@@ -233,12 +240,144 @@ export function useMechanicalKeyboard() {
     });
   }, [isMuted, initAudio]);
 
+  const startMusic = useCallback(() => {
+    initAudio();
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+
+    if (ambientNodesRef.current) return; // Already playing
+
+    const now = ctx.currentTime;
+    const oscs: OscillatorNode[] = [];
+    const gains: GainNode[] = [];
+
+    // 1. Low drone pads
+    const frequencies = [55, 110, 165, 220]; // A1, A2, E3, A3
+    frequencies.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = idx === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      
+      const baseGain = idx === 0 ? 0.008 : 0.004; // Very quiet base volume
+      gain.gain.setValueAtTime(baseGain, now);
+      
+      // LFO modulation for breathing effect
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.07 + idx * 0.02;
+      lfoGain.gain.value = baseGain * 0.35;
+      
+      lfo.connect(lfoGain);
+      lfoGain.connect(gain.gain);
+      lfo.start(now);
+      
+      oscs.push(osc, lfo);
+      gains.push(gain, lfoGain);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+    });
+
+    // 2. Chime system: periodic soft arpeggio
+    const pentatonic = [220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // A3, C4, D4, E4, G4, A4, C5
+    const playChime = () => {
+      const chimeCtx = audioCtxRef.current;
+      if (!chimeCtx) return;
+      const chimeNow = chimeCtx.currentTime;
+      
+      const numNotes = Math.random() > 0.65 ? 2 : 1;
+      for (let i = 0; i < numNotes; i++) {
+        const noteFreq = pentatonic[Math.floor(Math.random() * pentatonic.length)];
+        const osc = chimeCtx.createOscillator();
+        const gain = chimeCtx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(noteFreq, chimeNow + i * 0.18);
+        
+        gain.gain.setValueAtTime(0, chimeNow + i * 0.18);
+        gain.gain.linearRampToValueAtTime(0.006, chimeNow + 0.3 + i * 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.0001, chimeNow + 4.5 + i * 0.18);
+        
+        const filter = chimeCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(noteFreq, chimeNow);
+        filter.Q.setValueAtTime(2.5, chimeNow);
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(chimeCtx.destination);
+        
+        osc.start(chimeNow + i * 0.18);
+        osc.stop(chimeNow + 5.0 + i * 0.18);
+      }
+    };
+
+    playChime();
+    const intervalId = window.setInterval(playChime, 5500);
+
+    ambientNodesRef.current = {
+      oscs,
+      gains,
+      intervalId
+    };
+  }, [initAudio]);
+
+  const stopMusic = useCallback(() => {
+    if (!ambientNodesRef.current) return;
+    const { oscs, intervalId } = ambientNodesRef.current;
+    
+    oscs.forEach(osc => {
+      try {
+        osc.stop();
+      } catch (e) {}
+    });
+
+    if (intervalId) {
+      window.clearInterval(intervalId);
+    }
+
+    ambientNodesRef.current = null;
+  }, []);
+
+  const toggleMusic = useCallback(() => {
+    setIsMusicPlaying(prev => {
+      const next = !prev;
+      if (next) {
+        startMusic();
+      } else {
+        stopMusic();
+      }
+      return next;
+    });
+  }, [startMusic, stopMusic]);
+
   const toggleMuteState = useCallback(() => {
     setIsMuted(prev => !prev);
   }, []);
 
+  // Stop sound on unmount
+  useEffect(() => {
+    return () => {
+      if (ambientNodesRef.current) {
+        const { oscs, intervalId } = ambientNodesRef.current;
+        oscs.forEach(osc => {
+          try {
+            osc.stop();
+          } catch (e) {}
+        });
+        if (intervalId) {
+          window.clearInterval(intervalId);
+        }
+      }
+    };
+  }, []);
+
   return {
     isMuted,
+    isMusicPlaying,
     playKeypress,
     playReturn,
     playSuccess,
@@ -246,6 +385,7 @@ export function useMechanicalKeyboard() {
     playHover,
     playBootStep,
     playAccessGranted,
-    toggleMute: toggleMuteState
+    toggleMute: toggleMuteState,
+    toggleMusic
   };
 }

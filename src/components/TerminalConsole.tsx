@@ -31,6 +31,8 @@ interface TerminalConsoleProps {
   playSuccess: () => void;
   isMuted: boolean;
   toggleMute: () => void;
+  isMusicPlaying: boolean;
+  toggleMusic: () => void;
 }
 
 const FILES = [
@@ -49,7 +51,9 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
   playReturn,
   playSuccess,
   isMuted,
-  toggleMute
+  toggleMute,
+  isMusicPlaying,
+  toggleMusic
 }) => {
   const [input, setInput] = useState('');
   const [activeFile, setActiveFile] = useState<string | null>(null);
@@ -126,6 +130,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
             <div>- <span style={{ color: 'var(--color-green)' }}>theme</span>            : Toggle the retro CRT screen monitor scanline filter</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>mute</span>             : Mute terminal sound clicks</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>unmute</span>           : Unmute terminal sound clicks</div>
+            <div>- <span style={{ color: 'var(--color-green)' }}>music</span>            : Toggle background ambient soundtrack</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>help</span>             : Display this reference ledger</div>
           </div>
         );
@@ -245,6 +250,15 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
         outputNode = <div style={{ color: 'var(--color-cyan)' }}>Audio clicks activated.</div>;
         break;
 
+      case 'music':
+        toggleMusic();
+        outputNode = (
+          <div style={{ color: 'var(--color-cyan)' }}>
+            Background ambient music toggled. Currently: {!isMusicPlaying ? 'PLAYING' : 'STOPPED'}
+          </div>
+        );
+        break;
+
       default:
         outputNode = (
           <div style={{ color: 'var(--text-secondary)' }}>
@@ -352,7 +366,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
         }
       } else {
         // Command autocomplete or file autocomplete
-        const commands = ['help', 'clear', 'ls', 'neofetch', 'theme', 'mute', 'unmute', 'cat'];
+        const commands = ['help', 'clear', 'ls', 'neofetch', 'theme', 'mute', 'unmute', 'music', 'cat'];
         const cmdMatch = commands.find(c => c.startsWith(currentText));
         if (cmdMatch) {
           setInput(cmdMatch + (cmdMatch === 'cat' ? ' ' : ''));
@@ -528,13 +542,29 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
             <span>CRT: {crtEffect ? 'ON' : 'OFF'}</span>
           </div>
           <div className="terminal-status-right">
+            {/* Ambient Music Toggle */}
+            <button
+              className="terminal-mute-btn"
+              onClick={(e) => { e.stopPropagation(); playClick(); toggleMusic(); }}
+              style={{ marginRight: '6px' }}
+              title={isMusicPlaying ? "Stop background ambient hum" : "Play background ambient hum"}
+            >
+              <span style={{ fontSize: '0.75rem', marginRight: '4px', color: isMusicPlaying ? 'var(--color-cyan)' : 'inherit' }}>MUSIC</span>
+              {isMusicPlaying ? (
+                <span className="highlight-val" style={{ display: 'inline-block', transform: 'scale(0.85)' }}>▶</span>
+              ) : (
+                <span style={{ opacity: 0.5, display: 'inline-block', transform: 'scale(0.85)' }}>■</span>
+              )}
+            </button>
+            <span>|</span>
             {/* Mute Toggle */}
             <button 
               className="terminal-mute-btn" 
               onClick={(e) => { e.stopPropagation(); playClick(); toggleMute(); }}
               title={isMuted ? "Unmute terminal clicks" : "Mute terminal clicks"}
             >
-              {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} className="highlight-val" />}
+              <span style={{ fontSize: '0.75rem', marginRight: '4px', color: !isMuted ? 'var(--color-green)' : 'inherit' }}>SOUND</span>
+              {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} className="highlight-val" />}
             </button>
             <span>|</span>
             <a 

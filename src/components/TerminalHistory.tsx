@@ -110,31 +110,31 @@ export const YAMLViewer: React.FC<{ playHover: () => void }> = ({ playHover }) =
     {
       name: 'Smart Reporting Insight',
       tech: 'React, Node, SQL, Highcharts',
-      img: 'assets/project_smart_reporting.png',
+      img: './assets/project_smart_reporting.png',
       desc: 'Enterprise regulatory compliance reporting dashboards for Standard Chartered Bank.'
     },
     {
       name: 'Lobb Console',
       tech: 'Vue 3, TypeScript, Pinia',
-      img: 'assets/project_lobb_console.png',
+      img: './assets/project_lobb_console.png',
       desc: 'Real-time cargo dispatcher map platform managing freight brokerage loads.'
     },
     {
       name: 'FINA-HQ',
       tech: 'React, Node, Zoho integration',
-      img: 'assets/project_fina_hq.png',
+      img: './assets/project_fina_hq.png',
       desc: 'Corporate financial analytics sheet ledgers and document automation tools.'
     },
     {
       name: 'WATTAWOW',
       tech: 'Vue 3, Fabric.js, Leaflet',
-      img: 'assets/project_wattawow.png',
+      img: './assets/project_wattawow.png',
       desc: 'Cycling routes map tracker integrating rider statistics and safety stamps.'
     },
     {
       name: 'INCONN Console',
       tech: 'React, Redux, PostgreSQL',
-      img: 'assets/project_inconn.png',
+      img: './assets/project_inconn.png',
       desc: 'Enterprise asset registers suite containing 70+ sheets tracking utilization logs.'
     }
   ];
@@ -274,7 +274,7 @@ export const AboutViewer: React.FC = () => {
     <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', maxWidth: '750px', alignItems: 'center', marginTop: '10px' }}>
       <div style={{ position: 'relative', border: '1px solid var(--border-color)', padding: '6px', backgroundColor: 'rgba(255, 255, 255, 0.01)', borderRadius: '8px', width: '140px', height: '140px', overflow: 'hidden' }}>
         <img 
-          src="assets/photo.jpg" 
+          src="./assets/photo.jpg" 
           alt="Veeragopinath M" 
           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px', filter: 'grayscale(15%) contrast(105%)' }} 
         />
