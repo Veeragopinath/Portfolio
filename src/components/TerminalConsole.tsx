@@ -172,19 +172,45 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
             outputNode = (
               <ConfigFormViewer 
                 playHover={playHover} 
-                onSubmit={() => {
-                  playSuccess();
-                  setTerminalLogs(prev => [
-                    ...prev,
-                    {
-                      command: 'system transmission',
-                      output: (
-                        <div style={{ color: 'var(--color-green)', borderLeft: '2px solid var(--color-green)', paddingLeft: '10px' }}>
-                          [TRANSMISSION OK] Message sent successfully to Veeragopinath M.
-                        </div>
-                      )
-                    }
-                  ]);
+                onSubmit={(status) => {
+                  if (status === 'sending') {
+                    setTerminalLogs(prev => [
+                      ...prev,
+                      {
+                        command: 'system transmission',
+                        output: (
+                          <div style={{ color: 'var(--color-cyan)', borderLeft: '2px solid var(--color-cyan)', paddingLeft: '10px' }}>
+                            [BROADCASTING] Transmitting contact packets to Web3Forms...
+                          </div>
+                        )
+                      }
+                    ]);
+                  } else if (status === 'success') {
+                    playSuccess();
+                    setTerminalLogs(prev => [
+                      ...prev,
+                      {
+                        command: 'system transmission',
+                        output: (
+                          <div style={{ color: 'var(--color-green)', borderLeft: '2px solid var(--color-green)', paddingLeft: '10px' }}>
+                            [TRANSMISSION OK] Message sent successfully to Veeragopinath M.
+                          </div>
+                        )
+                      }
+                    ]);
+                  } else if (status === 'error') {
+                    setTerminalLogs(prev => [
+                      ...prev,
+                      {
+                        command: 'system transmission',
+                        output: (
+                          <div style={{ color: 'var(--color-pink)', borderLeft: '2px solid var(--color-pink)', paddingLeft: '10px' }}>
+                            [TRANSMISSION FAILED] Endpoint error. Please check your network connection.
+                          </div>
+                        )
+                      }
+                    ]);
+                  }
                 }} 
               />
             );

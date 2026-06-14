@@ -210,16 +210,61 @@ export const XMLViewer: React.FC = () => {
 };
 
 // 5. Config Form Viewer for contact.cfg
-export const ConfigFormViewer: React.FC<{ onSubmit: () => void; playHover: () => void }> = ({
+export const ConfigFormViewer: React.FC<{ 
+  onSubmit: (status: 'success' | 'error' | 'sending') => void; 
+  playHover: () => void 
+}> = ({
   onSubmit,
   playHover
 }) => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    onSubmit('sending');
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || 'YOUR_ACCESS_KEY_HERE';
+    
+    // If no key is set yet, mock the success after a short delay
+    if (accessKey === 'YOUR_ACCESS_KEY_HERE') {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        onSubmit('success');
+        setFormData({ name: '', email: '', message: '' });
+      }, 800);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: 'New Portfolio Contact Message'
+        })
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        setIsSubmitting(false);
+        onSubmit('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        throw new Error(result.message || 'Transmission failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      setIsSubmitting(false);
+      onSubmit('error');
+    }
   };
 
   return (
@@ -234,6 +279,7 @@ export const ConfigFormViewer: React.FC<{ onSubmit: () => void; playHover: () =>
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
             required
+            disabled={isSubmitting}
             onMouseEnter={playHover}
           />
         </div>
@@ -245,6 +291,7 @@ export const ConfigFormViewer: React.FC<{ onSubmit: () => void; playHover: () =>
             value={formData.email}
             onChange={e => setFormData({ ...formData, email: e.target.value })}
             required
+            disabled={isSubmitting}
             onMouseEnter={playHover}
           />
         </div>
@@ -256,12 +303,13 @@ export const ConfigFormViewer: React.FC<{ onSubmit: () => void; playHover: () =>
             value={formData.message}
             onChange={e => setFormData({ ...formData, message: e.target.value })}
             required
+            disabled={isSubmitting}
             onMouseEnter={playHover}
             style={{ resize: 'none' }}
           />
         </div>
-        <button type="submit" className="terminal-form-btn" onMouseEnter={playHover}>
-          RUN TRANSMISSION
+        <button type="submit" className="terminal-form-btn" onMouseEnter={playHover} disabled={isSubmitting}>
+          {isSubmitting ? 'TRANSMITTING...' : 'RUN TRANSMISSION'}
         </button>
       </form>
     </div>
