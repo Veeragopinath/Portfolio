@@ -225,9 +225,45 @@ export const ConfigFormViewer: React.FC<{
     setIsSubmitting(true);
     onSubmit('sending');
 
+    const googleFormId = import.meta.env.VITE_GOOGLE_FORM_ID;
+    const entryName = import.meta.env.VITE_GOOGLE_ENTRY_NAME;
+    const entryEmail = import.meta.env.VITE_GOOGLE_ENTRY_EMAIL;
+    const entryMsg = import.meta.env.VITE_GOOGLE_ENTRY_MSG;
+
+    // 1. Check if Google Forms config is set
+    if (googleFormId && entryName && entryEmail && entryMsg) {
+      try {
+        const formDataBody = new URLSearchParams();
+        formDataBody.append(entryName, formData.name);
+        formDataBody.append(entryEmail, formData.email);
+        formDataBody.append(entryMsg, formData.message);
+
+        // We use mode: 'no-cors' because Google Forms does not return CORS response headers.
+        // It successfully registers the submission, and no-cors lets the fetch resolve instead of blocking.
+        await fetch(`https://docs.google.com/forms/u/0/d/e/${googleFormId}/formResponse`, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formDataBody.toString()
+        });
+
+        // Since no-cors doesn't return response metadata, we assume success on completion
+        setIsSubmitting(false);
+        onSubmit('success');
+        setFormData({ name: '', email: '', message: '' });
+      } catch (error) {
+        console.error(error);
+        setIsSubmitting(false);
+        onSubmit('error');
+      }
+      return;
+    }
+
     const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || 'YOUR_ACCESS_KEY_HERE';
     
-    // If no key is set yet, mock the success after a short delay
+    // 2. Fall back to Web3Forms or simulation
     if (accessKey === 'YOUR_ACCESS_KEY_HERE') {
       setTimeout(() => {
         setIsSubmitting(false);
