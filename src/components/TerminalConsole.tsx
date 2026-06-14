@@ -19,6 +19,7 @@ import {
 interface HistoryEntry {
   command: string;
   output: React.ReactNode;
+  id?: string;
 }
 
 interface TerminalConsoleProps {
@@ -143,6 +144,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
             <div>- <span style={{ color: 'var(--color-green)' }}>mute</span>             : Mute terminal sound clicks</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>unmute</span>           : Unmute terminal sound clicks</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>music</span>            : Toggle background ambient soundtrack</div>
+            <div>- <span style={{ color: 'var(--color-green)' }}>ask [question]</span>    : Ask Veeragopinath's AI portfolio assistant</div>
             <div>- <span style={{ color: 'var(--color-green)' }}>help</span>             : Display this reference ledger</div>
           </div>
         );
@@ -297,6 +299,78 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
         );
         break;
 
+      case 'ask':
+      case 'chat': {
+        const question = args.join(' ');
+        if (!question) {
+          outputNode = (
+            <div style={{ color: 'var(--text-secondary)' }}>
+              Please specify a question. e.g. <span style={{ color: 'var(--color-cyan)' }}>ask do you know Vue?</span>
+            </div>
+          );
+          success = false;
+          break;
+        }
+
+        const logId = Math.random().toString(36).substring(2, 9);
+        outputNode = (
+          <div style={{ color: 'var(--color-cyan)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="terminal-cursor" style={{ display: 'inline-block', width: '8px', height: '15px', background: 'var(--color-cyan)' }}></span>
+            <span>AI is formulating response...</span>
+          </div>
+        );
+
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: question })
+        })
+          .then(res => {
+            if (!res.ok) throw new Error('API communication failure');
+            return res.json();
+          })
+          .then(data => {
+            const aiResponse = data.response;
+            setTerminalLogs(prev => 
+              prev.map(entry => 
+                entry.id === logId 
+                  ? { 
+                      ...entry, 
+                      output: (
+                        <div style={{ color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: '1.5', borderLeft: '2px solid rgba(6, 182, 212, 0.3)', paddingLeft: '12px' }}>
+                          {aiResponse}
+                        </div>
+                      ) 
+                    } 
+                  : entry
+              )
+            );
+            playSuccess();
+          })
+          .catch(err => {
+            console.error(err);
+            setTerminalLogs(prev => 
+              prev.map(entry => 
+                entry.id === logId 
+                  ? { 
+                      ...entry, 
+                      output: (
+                        <div style={{ color: 'var(--color-red)' }}>
+                          ERROR: Secure connection to AI model failed. Please verify GEMINI_API_KEY environment variable.
+                        </div>
+                      ) 
+                    } 
+                  : entry
+              )
+            );
+          });
+
+        setTerminalLogs(prev => [...prev, { command: trimmed, output: outputNode, id: logId }]);
+        return;
+      }
+
       default:
         outputNode = (
           <div style={{ color: 'var(--text-secondary)' }}>
@@ -404,7 +478,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
         }
       } else {
         // Command autocomplete or file autocomplete
-        const commands = ['help', 'clear', 'ls', 'neofetch', 'theme', 'mute', 'unmute', 'music', 'cat'];
+        const commands = ['help', 'clear', 'ls', 'neofetch', 'theme', 'mute', 'unmute', 'music', 'cat', 'ask'];
         const cmdMatch = commands.find(c => c.startsWith(currentText));
         if (cmdMatch) {
           setInput(cmdMatch + (cmdMatch === 'cat' ? ' ' : ''));

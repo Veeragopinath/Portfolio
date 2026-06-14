@@ -1,7 +1,3 @@
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
-import type { Plugin } from 'vite'
-
 const systemPrompt = `You are the AI portfolio assistant for Veeragopinath M.
 You are running in a terminal emulator environment on his website.
 Answer the user's questions about Veeragopinath professionally, accurately, and concisely. Keep responses monospace-friendly. Use clean, simple formatting (bullets, line breaks).
@@ -49,86 +45,13 @@ Veeragopinath M's Profile Information:
    - B.E. (Bachelor of Engineering): College of Engineering Guindy, Anna University (CGPA 8.06/10)
    - HSC (Higher Secondary Certificate): Vasan Matric Hr Secondary School (93%)
    - SSLC (Secondary School Leaving Certificate): Vasan Matric Hr Secondary School (98%)
-`
+`;
 
 /**
- * Dev-only plugin: serves /api/chat locally so the AI chatbot works
- * during `npm run dev`. Tries Groq first (generous free tier), then Gemini.
- * In production Vercel handles this via the serverless function in api/chat.js.
+ * Try Groq API (free tier: 30 RPM, 14,400 RPD)
+ * Uses Llama 3.3 70B — fast and high quality
  */
-function devApiChat(): Plugin {
-  let groqKey = ''
-  let geminiKey = ''
-
-  return {
-    name: 'dev-api-chat',
-    configResolved(config) {
-      const env = loadEnv(config.mode, config.root, '')
-      groqKey = env.GROQ_API_KEY || ''
-      geminiKey = env.GEMINI_API_KEY || ''
-    },
-    configureServer(server) {
-      server.middlewares.use('/api/chat', async (req, res) => {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS')
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-
-        if (req.method === 'OPTIONS') { res.writeHead(200); res.end(); return }
-        if (req.method !== 'POST') {
-          res.writeHead(405, { 'Content-Type': 'application/json' })
-          res.end(JSON.stringify({ error: 'Method not allowed' }))
-          return
-        }
-
-        let body = ''
-        req.on('data', (chunk: Buffer) => { body += chunk })
-        req.on('end', async () => {
-          try {
-            const { message } = JSON.parse(body)
-            if (!message) {
-              res.writeHead(400, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ error: 'Message is required' }))
-              return
-            }
-
-            if (!groqKey && !geminiKey) {
-              res.writeHead(500, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ error: 'No AI API key set in .env.local (need GROQ_API_KEY or GEMINI_API_KEY)' }))
-              return
-            }
-
-            let aiText = ''
-
-            // Try Groq first (more generous free tier)
-            if (groqKey) {
-              try {
-                aiText = await callGroq(message, groqKey)
-              } catch (err) {
-                console.error('Groq failed:', (err as Error).message)
-                if (geminiKey) {
-                  aiText = await callGemini(message, geminiKey)
-                } else {
-                  throw err
-                }
-              }
-            } else {
-              aiText = await callGemini(message, geminiKey)
-            }
-
-            res.writeHead(200, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ response: aiText.trim() }))
-          } catch (err) {
-            console.error('Dev /api/chat error:', err)
-            res.writeHead(502, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'AI service temporarily unavailable.' }))
-          }
-        })
-      })
-    }
-  }
-}
-
-async function callGroq(message: string, apiKey: string): Promise<string> {
+async function callGroq(message, apiKey) {
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -144,18 +67,21 @@ async function callGroq(message: string, apiKey: string): Promise<string> {
       max_tokens: 500,
       temperature: 0.3
     })
-  })
+  });
 
   if (!res.ok) {
-    const errText = await res.text()
-    throw new Error(`Groq ${res.status}: ${errText}`)
+    const errText = await res.text();
+    throw new Error(`Groq ${res.status}: ${errText}`);
   }
 
-  const data = await res.json() as { choices?: { message?: { content?: string } }[] }
-  return data.choices?.[0]?.message?.content || 'No response generated.'
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || 'No response generated.';
 }
 
-async function callGemini(message: string, apiKey: string): Promise<string> {
+/**
+ * Fallback: Gemini API
+ */
+async function callGemini(message, apiKey) {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
     {
@@ -168,19 +94,79 @@ async function callGemini(message: string, apiKey: string): Promise<string> {
         generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
       })
     }
-  )
+  );
 
   if (!res.ok) {
-    const errText = await res.text()
-    throw new Error(`Gemini ${res.status}: ${errText}`)
+    const errText = await res.text();
+    throw new Error(`Gemini ${res.status}: ${errText}`);
   }
 
-  const data = await res.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] }
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.'
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
 }
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), devApiChat()],
-  base: '/',
-})
+export default async function handler(req, res) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  if (req.method === 'OPTIONS') { res.writeHead(200); res.end(); return; }
+  if (req.method !== 'POST') {
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+
+  let body = '';
+  req.on('data', chunk => { body += chunk; });
+
+  req.on('end', async () => {
+    try {
+      const { message } = JSON.parse(body);
+      if (!message) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Message is required' }));
+        return;
+      }
+
+      const groqKey = process.env.GROQ_API_KEY;
+      const geminiKey = process.env.GEMINI_API_KEY;
+
+      if (!groqKey && !geminiKey) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No AI API key configured' }));
+        return;
+      }
+
+      let aiText = '';
+
+      // Strategy: try Groq first (more generous free tier), fallback to Gemini
+      if (groqKey) {
+        try {
+          aiText = await callGroq(message, groqKey);
+        } catch (err) {
+          console.error('Groq failed, trying fallback:', err.message);
+          if (geminiKey) {
+            aiText = await callGemini(message, geminiKey);
+          } else {
+            throw err;
+          }
+        }
+      } else if (geminiKey) {
+        aiText = await callGemini(message, geminiKey);
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ response: aiText.trim() }));
+    } catch (err) {
+      console.error('AI Chat Error:', err.message);
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'AI service temporarily unavailable. Please try again.' }));
+    }
+  });
+}
