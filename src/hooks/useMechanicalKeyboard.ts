@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 export function useMechanicalKeyboard() {
-  const [isMuted, setIsMuted] = useState(true); // Muted by default to follow browser policies
+  const [isMuted, setIsMuted] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 

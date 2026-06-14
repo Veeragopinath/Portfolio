@@ -4,8 +4,6 @@ import {
   FolderOpen, 
   FileText, 
   Terminal, 
-  Volume2, 
-  VolumeX, 
   ExternalLink,
   Info
 } from 'lucide-react';
@@ -542,29 +540,14 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
             <span>CRT: {crtEffect ? 'ON' : 'OFF'}</span>
           </div>
           <div className="terminal-status-right">
-            {/* Ambient Music Toggle */}
-            <button
-              className="terminal-mute-btn"
-              onClick={(e) => { e.stopPropagation(); playClick(); toggleMusic(); }}
-              style={{ marginRight: '6px' }}
-              title={isMusicPlaying ? "Stop background ambient hum" : "Play background ambient hum"}
-            >
-              <span style={{ fontSize: '0.75rem', marginRight: '4px', color: isMusicPlaying ? 'var(--color-cyan)' : 'inherit' }}>MUSIC</span>
-              {isMusicPlaying ? (
-                <span className="highlight-val" style={{ display: 'inline-block', transform: 'scale(0.85)' }}>▶</span>
-              ) : (
-                <span style={{ opacity: 0.5, display: 'inline-block', transform: 'scale(0.85)' }}>■</span>
-              )}
-            </button>
-            <span>|</span>
             {/* Mute Toggle */}
             <button 
               className="terminal-mute-btn" 
               onClick={(e) => { e.stopPropagation(); playClick(); toggleMute(); }}
+              style={{ color: isMuted ? 'var(--text-muted)' : 'var(--color-green)' }}
               title={isMuted ? "Unmute terminal clicks" : "Mute terminal clicks"}
             >
-              <span style={{ fontSize: '0.75rem', marginRight: '4px', color: !isMuted ? 'var(--color-green)' : 'inherit' }}>SOUND</span>
-              {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} className="highlight-val" />}
+              {isMuted ? 'MUTED' : 'SOUND'}
             </button>
             <span>|</span>
             <a 
