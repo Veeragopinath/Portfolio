@@ -4,6 +4,7 @@ import { TerminalConsole } from './components/TerminalConsole';
 import { CanvasGrid } from './components/CanvasGrid';
 
 function App() {
+  const [isStarted, setIsStarted] = useState(false);
   const [decryptProgress, setDecryptProgress] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const {
@@ -21,6 +22,8 @@ function App() {
   } = useMechanicalKeyboard();
 
   useEffect(() => {
+    if (!isStarted) return;
+
     // Start automated fast decrypt sequence
     const interval = setInterval(() => {
       setDecryptProgress(prev => {
@@ -39,7 +42,12 @@ function App() {
     }, 90);
 
     return () => clearInterval(interval);
-  }, [playBootStep, playAccessGranted]);
+  }, [isStarted, playBootStep, playAccessGranted]);
+
+  const handleStart = () => {
+    playReturn();
+    setIsStarted(true);
+  };
 
   return (
     <>
@@ -60,14 +68,41 @@ function App() {
               userSelect: 'none'
             }}
           >
-            <div>VEERAGOPINATH.DEV SECURE DEPLOYMENT ENGINE v1.0.3</div>
-            <div style={{ marginTop: '12px', fontSize: '1.2rem', fontWeight: 'bold' }}>
-              DECRYPTING PORTFOLIO DATA PACKETS... {decryptProgress}%
-            </div>
-            {/* Simple progress bar outline */}
-            <div style={{ width: '220px', height: '6px', border: '1px solid var(--color-cyan)', borderRadius: '3px', marginTop: '15px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ width: `${decryptProgress}%`, height: '100%', backgroundColor: 'var(--color-cyan)', transition: 'width 0.08s ease' }}></div>
-            </div>
+            <div>VEERAGOPINATH.DEV // TERMINAL WORKSPACE v1.0.3</div>
+            
+            {!isStarted ? (
+              <button 
+                onClick={handleStart} 
+                className="terminal-start-btn"
+                onMouseEnter={playHover}
+                style={{
+                  marginTop: '30px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid var(--color-cyan)',
+                  color: 'var(--color-cyan)',
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: '0.95rem',
+                  padding: '12px 24px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  boxShadow: '0 0 10px rgba(6, 182, 212, 0.15)',
+                  transition: 'all 0.2s ease',
+                  textTransform: 'uppercase'
+                }}
+              >
+                [ CONNECT TO TERMINAL ]
+              </button>
+            ) : (
+              <>
+                <div style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                  INITIALIZING WORKSPACE TERMINAL... {decryptProgress}%
+                </div>
+                {/* Simple progress bar outline */}
+                <div style={{ width: '220px', height: '6px', border: '1px solid var(--color-cyan)', borderRadius: '3px', marginTop: '15px', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ width: `${decryptProgress}%`, height: '100%', backgroundColor: 'var(--color-cyan)', transition: 'width 0.08s ease' }}></div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       ) : (

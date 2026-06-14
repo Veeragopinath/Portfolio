@@ -83,11 +83,25 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
     scrollToBottom();
   }, [terminalLogs, scrollToBottom]);
 
-  // Keep input focused unless text selection is happening
+  // Keep input focused unless text selection or form interaction is happening
   const focusInput = () => {
     if (!isAutotyping && inputRef.current) {
       inputRef.current.focus();
     }
+  };
+
+  const handleShellClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const isFormInteraction = 
+      target.tagName === 'INPUT' || 
+      target.tagName === 'TEXTAREA' || 
+      target.tagName === 'BUTTON' ||
+      target.closest('.terminal-form') !== null;
+
+    if (isFormInteraction) {
+      return;
+    }
+    focusInput();
   };
 
   useEffect(() => {
@@ -467,7 +481,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
       </aside>
 
       {/* 2. Main Terminal Panel */}
-      <section className="terminal-shell" onClick={focusInput}>
+      <section className="terminal-shell" onClick={handleShellClick}>
         {/* Terminal Header */}
         <header className="terminal-header">
           <div className="terminal-tab">

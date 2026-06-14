@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 export const JSONViewer: React.FC = () => {
   const skillsData = {
     programming: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3 / Sass'],
-    clientSide: ['React.js', 'Vue.js (Vue 3)', 'Nuxt.js', 'Redux Toolkit', 'Pinia'],
+    clientSide: ['React.js', 'Vue.js', 'Nuxt.js', 'Redux Toolkit', 'Pinia'],
     backEnd: ['Node.js', 'Express.js', 'SQL / PostgreSQL', 'Sequelize ORM'],
     testingQA: ['Vitest', 'Playwright', 'Cypress', 'Jest'],
     architecture: ['REST APIs', 'Microservices', 'System Design', 'SOLID Principles']
@@ -169,7 +169,7 @@ export const XMLViewer: React.FC = () => {
       <div>
         <span className="highlight-key">&lt;academic_records&gt;</span>
       </div>
-      
+
       <div style={{ paddingLeft: '20px' }}>
         <div>
           <span className="highlight-key">&lt;degree</span> <span className="highlight-val">course</span>=<span className="highlight-num">"Bachelor of Engineering (B.E.)"</span>
@@ -210,157 +210,157 @@ export const XMLViewer: React.FC = () => {
 };
 
 // 5. Config Form Viewer for contact.cfg
-export const ConfigFormViewer: React.FC<{ 
-  onSubmit: (status: 'success' | 'error' | 'sending') => void; 
-  playHover: () => void 
+export const ConfigFormViewer: React.FC<{
+  onSubmit: (status: 'success' | 'error' | 'sending') => void;
+  playHover: () => void
 }> = ({
   onSubmit,
   playHover
 }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    onSubmit('sending');
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      onSubmit('sending');
 
-    const googleFormId = import.meta.env.VITE_GOOGLE_FORM_ID;
-    const entryName = import.meta.env.VITE_GOOGLE_ENTRY_NAME;
-    const entryEmail = import.meta.env.VITE_GOOGLE_ENTRY_EMAIL;
-    const entryMsg = import.meta.env.VITE_GOOGLE_ENTRY_MSG;
+      const googleFormId = import.meta.env.VITE_GOOGLE_FORM_ID;
+      const entryName = import.meta.env.VITE_GOOGLE_ENTRY_NAME;
+      const entryEmail = import.meta.env.VITE_GOOGLE_ENTRY_EMAIL;
+      const entryMsg = import.meta.env.VITE_GOOGLE_ENTRY_MSG;
 
-    // 1. Check if Google Forms config is set
-    if (googleFormId && entryName && entryEmail && entryMsg) {
+      // 1. Check if Google Forms config is set
+      if (googleFormId && entryName && entryEmail && entryMsg) {
+        try {
+          const formDataBody = new URLSearchParams();
+          formDataBody.append(entryName, formData.name);
+          formDataBody.append(entryEmail, formData.email);
+          formDataBody.append(entryMsg, formData.message);
+
+          // We use mode: 'no-cors' because Google Forms does not return CORS response headers.
+          // It successfully registers the submission, and no-cors lets the fetch resolve instead of blocking.
+          await fetch(`https://docs.google.com/forms/u/0/d/e/${googleFormId}/formResponse`, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formDataBody.toString()
+          });
+
+          // Since no-cors doesn't return response metadata, we assume success on completion
+          setIsSubmitting(false);
+          onSubmit('success');
+          setFormData({ name: '', email: '', message: '' });
+        } catch (error) {
+          console.error(error);
+          setIsSubmitting(false);
+          onSubmit('error');
+        }
+        return;
+      }
+
+      const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || 'YOUR_ACCESS_KEY_HERE';
+
+      // 2. Fall back to Web3Forms or simulation
+      if (accessKey === 'YOUR_ACCESS_KEY_HERE') {
+        setTimeout(() => {
+          setIsSubmitting(false);
+          onSubmit('success');
+          setFormData({ name: '', email: '', message: '' });
+        }, 800);
+        return;
+      }
+
       try {
-        const formDataBody = new URLSearchParams();
-        formDataBody.append(entryName, formData.name);
-        formDataBody.append(entryEmail, formData.email);
-        formDataBody.append(entryMsg, formData.message);
-
-        // We use mode: 'no-cors' because Google Forms does not return CORS response headers.
-        // It successfully registers the submission, and no-cors lets the fetch resolve instead of blocking.
-        await fetch(`https://docs.google.com/forms/u/0/d/e/${googleFormId}/formResponse`, {
+        const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
-          body: formDataBody.toString()
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formData.name,
+            email: formData.email,
+            message: formData.message,
+            subject: 'New Portfolio Contact Message'
+          })
         });
-
-        // Since no-cors doesn't return response metadata, we assume success on completion
-        setIsSubmitting(false);
-        onSubmit('success');
-        setFormData({ name: '', email: '', message: '' });
+        const result = await response.json();
+        if (response.ok && result.success) {
+          setIsSubmitting(false);
+          onSubmit('success');
+          setFormData({ name: '', email: '', message: '' });
+        } else {
+          throw new Error(result.message || 'Transmission failed.');
+        }
       } catch (error) {
         console.error(error);
         setIsSubmitting(false);
         onSubmit('error');
       }
-      return;
-    }
+    };
 
-    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || 'YOUR_ACCESS_KEY_HERE';
-    
-    // 2. Fall back to Web3Forms or simulation
-    if (accessKey === 'YOUR_ACCESS_KEY_HERE') {
-      setTimeout(() => {
-        setIsSubmitting(false);
-        onSubmit('success');
-        setFormData({ name: '', email: '', message: '' });
-      }, 800);
-      return;
-    }
-
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          subject: 'New Portfolio Contact Message'
-        })
-      });
-      const result = await response.json();
-      if (response.ok && result.success) {
-        setIsSubmitting(false);
-        onSubmit('success');
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error(result.message || 'Transmission failed.');
-      }
-    } catch (error) {
-      console.error(error);
-      setIsSubmitting(false);
-      onSubmit('error');
-    }
+    return (
+      <div>
+        <div className="terminal-form-title"># SYSTEM CONFIG: contact_form.cfg</div>
+        <form onSubmit={handleSubmit} className="terminal-form">
+          <div className="terminal-form-row">
+            <label className="terminal-form-label">NAME =</label>
+            <input
+              type="text"
+              className="terminal-form-input"
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              required
+              disabled={isSubmitting}
+              onMouseEnter={playHover}
+            />
+          </div>
+          <div className="terminal-form-row">
+            <label className="terminal-form-label">EMAIL =</label>
+            <input
+              type="email"
+              className="terminal-form-input"
+              value={formData.email}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              required
+              disabled={isSubmitting}
+              onMouseEnter={playHover}
+            />
+          </div>
+          <div className="terminal-form-row" style={{ alignItems: 'start' }}>
+            <label className="terminal-form-label" style={{ marginTop: '4px' }}>MSG =</label>
+            <textarea
+              className="terminal-form-input"
+              rows={3}
+              value={formData.message}
+              onChange={e => setFormData({ ...formData, message: e.target.value })}
+              required
+              disabled={isSubmitting}
+              onMouseEnter={playHover}
+              style={{ resize: 'none' }}
+            />
+          </div>
+          <button type="submit" className="terminal-form-btn" onMouseEnter={playHover} disabled={isSubmitting}>
+            {isSubmitting ? 'TRANSMITTING...' : 'RUN TRANSMISSION'}
+          </button>
+        </form>
+      </div>
+    );
   };
-
-  return (
-    <div>
-      <div className="terminal-form-title"># SYSTEM CONFIG: contact_form.cfg</div>
-      <form onSubmit={handleSubmit} className="terminal-form">
-        <div className="terminal-form-row">
-          <label className="terminal-form-label">NAME =</label>
-          <input
-            type="text"
-            className="terminal-form-input"
-            value={formData.name}
-            onChange={e => setFormData({ ...formData, name: e.target.value })}
-            required
-            disabled={isSubmitting}
-            onMouseEnter={playHover}
-          />
-        </div>
-        <div className="terminal-form-row">
-          <label className="terminal-form-label">EMAIL =</label>
-          <input
-            type="email"
-            className="terminal-form-input"
-            value={formData.email}
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
-            required
-            disabled={isSubmitting}
-            onMouseEnter={playHover}
-          />
-        </div>
-        <div className="terminal-form-row" style={{ alignItems: 'start' }}>
-          <label className="terminal-form-label" style={{ marginTop: '4px' }}>MSG =</label>
-          <textarea
-            className="terminal-form-input"
-            rows={3}
-            value={formData.message}
-            onChange={e => setFormData({ ...formData, message: e.target.value })}
-            required
-            disabled={isSubmitting}
-            onMouseEnter={playHover}
-            style={{ resize: 'none' }}
-          />
-        </div>
-        <button type="submit" className="terminal-form-btn" onMouseEnter={playHover} disabled={isSubmitting}>
-          {isSubmitting ? 'TRANSMITTING...' : 'RUN TRANSMISSION'}
-        </button>
-      </form>
-    </div>
-  );
-};
 
 // 6. About Viewer for about.txt
 export const AboutViewer: React.FC = () => {
   return (
     <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', maxWidth: '750px', alignItems: 'center', marginTop: '10px' }}>
       <div style={{ position: 'relative', border: '1px solid var(--border-color)', padding: '6px', backgroundColor: 'rgba(255, 255, 255, 0.01)', borderRadius: '8px', width: '140px', height: '140px', overflow: 'hidden' }}>
-        <img 
-          src="./assets/photo.jpg" 
-          alt="Veeragopinath M" 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px', filter: 'grayscale(15%) contrast(105%)' }} 
+        <img
+          src="./assets/photo.jpg"
+          alt="Veeragopinath M"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px', filter: 'grayscale(15%) contrast(105%)' }}
         />
         {/* CRT scanline scan bar overlay */}
         <div style={{ position: 'absolute', inset: '6px', background: 'linear-gradient(180deg, rgba(6, 182, 212, 0.1) 0%, rgba(6, 182, 212, 0) 100%)', pointerEvents: 'none', borderRadius: '4px' }}></div>

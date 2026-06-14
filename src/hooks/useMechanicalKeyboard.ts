@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 export function useMechanicalKeyboard() {
   const [isMuted, setIsMuted] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   const ambientNodesRef = useRef<{
@@ -15,7 +15,7 @@ export function useMechanicalKeyboard() {
     if (!audioCtxRef.current) {
       audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
-    if (audioCtxRef.current.state === 'suspended') {
+    if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
       audioCtxRef.current.resume();
     }
   }, []);
@@ -168,9 +168,8 @@ export function useMechanicalKeyboard() {
 
   const playBootStep = useCallback(() => {
     if (isMuted) return;
-    initAudio();
     const ctx = audioCtxRef.current;
-    if (!ctx) return;
+    if (!ctx || ctx.state === 'suspended') return;
 
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
@@ -187,13 +186,12 @@ export function useMechanicalKeyboard() {
     gainNode.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.015);
-  }, [isMuted, initAudio]);
+  }, [isMuted]);
 
   const playAccessGranted = useCallback(() => {
     if (isMuted) return;
-    initAudio();
     const ctx = audioCtxRef.current;
-    if (!ctx) return;
+    if (!ctx || ctx.state === 'suspended') return;
 
     const now = ctx.currentTime;
     
@@ -238,7 +236,7 @@ export function useMechanicalKeyboard() {
       oscChime.start(now + 0.2 + index * 0.05);
       oscChime.stop(now + 0.7 + index * 0.05);
     });
-  }, [isMuted, initAudio]);
+  }, [isMuted]);
 
   const startMusic = useCallback(() => {
     initAudio();
@@ -260,7 +258,7 @@ export function useMechanicalKeyboard() {
       osc.type = idx === 0 ? 'sine' : 'triangle';
       osc.frequency.setValueAtTime(freq, now);
       
-      const baseGain = idx === 0 ? 0.008 : 0.004; // Very quiet base volume
+      const baseGain = idx === 0 ? 0.024 : 0.012; // Increased base volume for richer hum
       gain.gain.setValueAtTime(baseGain, now);
       
       // LFO modulation for breathing effect
@@ -298,7 +296,7 @@ export function useMechanicalKeyboard() {
         osc.frequency.setValueAtTime(noteFreq, chimeNow + i * 0.18);
         
         gain.gain.setValueAtTime(0, chimeNow + i * 0.18);
-        gain.gain.linearRampToValueAtTime(0.006, chimeNow + 0.3 + i * 0.18);
+        gain.gain.linearRampToValueAtTime(0.018, chimeNow + 0.3 + i * 0.18); // Increased chime volume for better presence
         gain.gain.exponentialRampToValueAtTime(0.0001, chimeNow + 4.5 + i * 0.18);
         
         const filter = chimeCtx.createBiquadFilter();
@@ -346,17 +344,58 @@ export function useMechanicalKeyboard() {
     setIsMusicPlaying(prev => {
       const next = !prev;
       if (next) {
-        startMusic();
+        if (!isMuted) {
+          startMusic();
+        }
       } else {
         stopMusic();
       }
       return next;
     });
-  }, [startMusic, stopMusic]);
+  }, [isMuted, startMusic, stopMusic]);
 
   const toggleMuteState = useCallback(() => {
-    setIsMuted(prev => !prev);
-  }, []);
+    setIsMuted(prev => {
+      const next = !prev;
+      if (next) {
+        stopMusic();
+      } else {
+        if (isMusicPlaying) {
+          startMusic();
+        }
+      }
+      return next;
+    });
+  }, [isMusicPlaying, startMusic, stopMusic]);
+
+  // Initialize audio context and start background music on first user interaction
+  useEffect(() => {
+    const handleInteraction = () => {
+      try {
+        if (!audioCtxRef.current) {
+          audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        }
+        if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+          audioCtxRef.current.resume();
+        }
+        if (isMusicPlaying && !ambientNodesRef.current && !isMuted) {
+          startMusic();
+        }
+      } catch (e) {
+        console.error("Failed to initialize audio:", e);
+      }
+    };
+
+    window.addEventListener('click', handleInteraction, { once: true });
+    window.addEventListener('keydown', handleInteraction, { once: true });
+    window.addEventListener('touchstart', handleInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('keydown', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+    };
+  }, [isMusicPlaying, isMuted, startMusic]);
 
   // Stop sound on unmount
   useEffect(() => {

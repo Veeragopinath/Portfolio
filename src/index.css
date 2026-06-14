@@ -33,6 +33,7 @@ body {
   color: var(--text-primary);
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   position: relative;
 }
@@ -72,6 +73,7 @@ body::before {
   grid-template-columns: 240px 1fr;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-terminal);
   position: relative;
   z-index: 1;
@@ -440,4 +442,14 @@ body::before {
   .terminal-project-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Loader Welcome Button styling */
+.terminal-start-btn:hover {
+  background-color: rgba(6, 182, 212, 0.1) !important;
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.45) !important;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6) !important;
+}
+.terminal-start-btn:active {
+  transform: scale(0.98);
 }
