@@ -62,16 +62,7 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
   const [terminalLogs, setTerminalLogs] = useState<HistoryEntry[]>([
     {
       command: 'system init',
-      output: (
-        <div style={{ color: 'var(--text-secondary)' }}>
-          <div>VM-DEV Terminal Console [Version 1.0.3]</div>
-          <div>Authorized Connection established at {new Date().toLocaleDateString()}.</div>
-          <div style={{ marginTop: '6px' }}>
-            Type <span style={{ color: 'var(--color-cyan)' }}>help</span> to list available commands,
-            or click files in the explorer sidebar to view sections.
-          </div>
-        </div>
-      )
+      output: null
     }
   ]);
 
@@ -460,10 +451,51 @@ export const TerminalConsole: React.FC<TerminalConsoleProps> = ({
                   <span className="terminal-command">{entry.command}</span>
                 </div>
               )}
-              {entry.output && (
-                <div className="terminal-output" style={{ marginTop: entry.command === 'system init' ? 0 : '8px' }}>
-                  {entry.output}
+              {entry.command === 'system init' ? (
+                <div className="terminal-output" style={{ marginTop: 0 }}>
+                  <div style={{ color: 'var(--text-secondary)' }}>
+                    <div>VM-DEV Terminal Console [Version 1.0.3]</div>
+                    <div>Authorized Connection established at {new Date().toLocaleDateString()}.</div>
+                    <div style={{ marginTop: '6px' }}>
+                      Type <span style={{ color: 'var(--color-cyan)' }}>help</span> to list available commands,
+                      or click files in the explorer sidebar to view sections.
+                    </div>
+                    
+                    {/* Quick-access click shortcuts (crucial for mobile/tablet where sidebar is collapsed) */}
+                    <div style={{ marginTop: '16px' }}>
+                      <div style={{ color: 'var(--text-muted)', marginBottom: '8px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                        AVAILABLE CHANNELS (TAP TO LOAD):
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {FILES.map(file => (
+                          <button
+                            key={file}
+                            onClick={() => handleSidebarFileClick(file)}
+                            style={{
+                              background: 'rgba(6, 182, 212, 0.04)',
+                              border: '1px solid rgba(6, 182, 212, 0.15)',
+                              borderRadius: '4px',
+                              color: 'var(--color-cyan)',
+                              padding: '3px 8px',
+                              fontSize: '0.75rem',
+                              cursor: 'pointer',
+                              fontFamily: 'var(--font-mono)'
+                            }}
+                            onMouseEnter={playHover}
+                          >
+                            {file}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                entry.output && (
+                  <div className="terminal-output" style={{ marginTop: '8px' }}>
+                    {entry.output}
+                  </div>
+                )
               )}
             </div>
           ))}
